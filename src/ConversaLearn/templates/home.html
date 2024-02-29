@@ -1,0 +1,35 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>ChatMentor English</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <h1>ChatMentor English</h1>
+    </header>
+    <main>
+        <p>Améliorez vos compétences conversationnelles en anglais grâce à ChatMentor English !</p>
+        <p>Notre application innovante utilise l'intelligence artificielle pour vous proposer des interactions conversationnelles réalistes et personnalisées.</p>
+        <section class="features">
+            <h2>Fonctionnalités</h2>
+            <ul>
+                <li>Conversez avec deux intelligences artificielles distinctes : un compagnon amical et un mentor pédagogique.</li>
+                <li>Apprenez de vos erreurs grâce à des commentaires et des suggestions constructives.</li>
+                <li>Personnalisez votre expérience d'apprentissage avec des leçons et des sujets adaptés à vos besoins.</li>
+            </ul>
+        </section>
+        <section class="actions">
+            {% comment %} <a href="{% url 'chat' %}">Commencer à chatter</a>
+            <a href="{% url 'myLesson' %}">Accéder à mes leçons</a>
+            <a href="{% url 'contact_us' %}">Nous contacter</a> {% endcomment %}
+        </section>
+    </main>
+    <footer>
+        <p>&copy; ChatMentor English 2024</p>
+    </footer>
+</body>
+</html>
