@@ -29,6 +29,7 @@ def sendableMsg(model, json, msg):
 def send2Friend(model, json, msg):
     q = json["toFriend"]
     q = replaceMSG(q, msg)
+    print(q)
     repMax = question_answer(q, model, 0.5)
     return repMax
 

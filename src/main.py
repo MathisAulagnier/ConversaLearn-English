@@ -14,6 +14,8 @@ def main(model_name = "mistral-7b-instruct-v0.1.Q4_0.gguf"):
         print(model.generate("Are you ready to start?", temp=0))
         while True:
             input_text = input("Say something: ")
+            if input_text.lower() == "exit":
+                break
             messages.append(input_text)
             repMax = send2Friend(model, json, input_text)  
             print(repMax)      

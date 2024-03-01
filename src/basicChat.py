@@ -9,15 +9,13 @@ is_dark_mode = True
 def send_message(page, message_list, message_input, model, json):
     # Affichage du message
     q = str(message_input.value)
-    print(send2Friend(model, json, q))
-
     message_list.controls.append(ft.Row([
         ft.Container(content=ft.Text(message_input.value), bgcolor=ft.colors.LIGHT_BLUE, padding=10, border_radius=10),
         ft.Container(content=ft.Text("You"), bgcolor=ft.colors.LIGHT_BLUE_ACCENT, padding=5, border_radius=5, margin=ft.margin.only(left=10))
     ], alignment=ft.MainAxisAlignment.END))
     # Réponse du modèle
-    repMax = send2Friend(model, json, q)
-    # repMax = "read"
+    # repMax = send2Friend(model, json, q)
+    repMax = "read"
     message_list.controls.append(ft.Row([
         ft.Container(content=ft.Image("static/images/max.png", width=25,height=25,fit=ft.ImageFit.CONTAIN,), bgcolor=ft.colors.WHITE, padding=5, border_radius=5, margin=ft.margin.only(left=10)),
         ft.Container(content=ft.Text(repMax), bgcolor=ft.colors.GREY, padding=10, border_radius=10),
@@ -71,18 +69,21 @@ def main(page: ft.Page):
         ]
     )
 
-
     #######################
 
     page.add(head, message_list, message_input, send_button, navigation_bar)
     page.update()
 
 
-model = loadModel("/Users/mathisaulagnier/Library/Application Support/nomic.ai/GPT4All/mistral-7b-instruct-v0.1.Q4_0.gguf")
+# model = loadModel("/Users/mathisaulagnier/Library/Application Support/nomic.ai/GPT4All/mistral-7b-instruct-v0.1.Q4_0.gguf")
+model = True
 json = load_json("static/prompts.json")
-# Chat loop
-with model.chat_session():
-    model.generate(prompt=json["StartPrompt"], temp=0)
-    print(model.generate("Are you ready to start?", temp=0))
+# # Chat loop
+# with model.chat_session():
+#     model.generate(prompt=json["StartPrompt"], temp=0)
+#     print(model.generate("Are you ready to start?", temp=0))
 
-    ft.app(target=main,)
+#     ft.app(target=main,)
+
+# ft.app(target=main, view=ft.AppView.WEB_BROWSER,)
+ft.app(target=main, view=ft.AppView.FLET_APP)
