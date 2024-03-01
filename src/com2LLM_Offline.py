@@ -16,6 +16,7 @@ def verbose(q):
     print(q)
     print("Answer:")
 
+
 def sendableMsg(model, json, msg):
     q = json["toModerator"]
     q = replaceMSG(q, msg)
@@ -28,8 +29,8 @@ def sendableMsg(model, json, msg):
 def send2Friend(model, json, msg):
     q = json["toFriend"]
     q = replaceMSG(q, msg)
-    verbose(q)
-    print(question_answer(q, model, 0.5))
+    repMax = question_answer(q, model, 0.5)
+    return repMax
 
 def send2Teacher(model, json, messages):
     q = json["toTeacher"]
