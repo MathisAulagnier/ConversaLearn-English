@@ -60,12 +60,29 @@ def main(page: ft.Page):
     )
 
     
+    exercise_data = ["This is a text with {} and {}.", "blank1", "blank2"]
 
+    exercise_text = ft.Text()
+
+    answer_buttons = []
 
     #######################
     ###### Fonctions ######
     #######################
 
+    def generate_clicked(exercise_data) -> ft.Column:
+        text_exo = exercise_data[0].split("{}")
+        exercise_field = ft.Column()
+
+        for i in range(len(text_exo)):
+            exercise_field.controls.append(ft.Text(text_exo[i]))
+            if i < len(text_exo) - 1:
+                exercise_field.controls.append(ft.TextField(hint_text='..............'))
+
+        return exercise_field
+        
+
+    
     def selected_tab(e):
         global indexe
         if indexe == e.control.selected_index:
@@ -80,7 +97,7 @@ def main(page: ft.Page):
             page.insert(1, ft.Text("Lessons"))
         elif indexe == 2:
             page.controls.pop(1)
-            page.insert(1, ft.Text("Exercices"))
+            page.insert(1, generate_clicked(exercise_data))
         else:
             print("Unknown")
 
