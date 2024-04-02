@@ -23,10 +23,11 @@ def main(page: ft.Page):
     #######################
 
     profil = ft.CircleAvatar(foreground_image_url="https://media.licdn.com/dms/image/D4E03AQEXTy2eNrOWoQ/profile-displayphoto-shrink_400_400/0/1695153733199?e=1717632000&v=beta&t=S_YTA9qASE8Z20jLNCekoKRlRFcGu8L4Hi8806icuUI")
+    bot_profil = ft.CircleAvatar(foreground_image_url="https://img.freepik.com/photos-gratuite/vue-du-robot-graphique-3d_23-2150849173.jpg")
     
-    message_list = ft.Column(expand=1, wrap=False, scroll="always")
+    message_list = ft.Column(expand=1, wrap=False, scroll="always", auto_scroll=True,)
     message_input = ft.TextField(hint_text="Type a message...", )
-    send_button = ft.ElevatedButton("Send",)
+    send_button = ft.ElevatedButton("Send", on_click=lambda e: send_message(e))
 
     # Mettre message_list, message_input, send_button dans une colonne
     chat = ft.Column(
@@ -68,7 +69,22 @@ def main(page: ft.Page):
 
     ### Chat ###
 
+    def send_message(e):
+        sent_message = ft.Container(ft.Text(message_input.value, size=16, color="white"),padding=3, margin=3, bgcolor=ft.colors.BLUE_500 , border_radius=5)
 
+        received_message = ft.Text("vu", size=16) # Modifier par la réponse du LLM
+
+        # Ajouter une bulle de message
+        sent_row = ft.Row([sent_message, profil], alignment=ft.MainAxisAlignment.END)
+        received_row = ft.Row([bot_profil, received_message], alignment=ft.MainAxisAlignment.START)
+        message_list.controls.append(sent_row)
+        message_list.controls.append(received_row)
+        message_list.update() 
+
+        # Réinitialiser le champ de texte
+        message_input.value = ""
+        message_input.update()
+        page.update()
 
     ### Exercices ###
 
