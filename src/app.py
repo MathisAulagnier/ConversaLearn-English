@@ -60,15 +60,17 @@ def main(page: ft.Page):
     )
 
     
-    exercise_data = ["This is a text with {} and {}.", "blank1", "blank2"]
-
-    exercise_text = ft.Text()
-
-    answer_buttons = []
+    exercise_data = ["This is a text with {} and {}.", "a", "b"]
 
     #######################
     ###### Fonctions ######
     #######################
+
+    ### Chat ###
+
+
+
+    ### Exercices ###
 
     def generate_clicked(exercise_data) -> ft.Column:
         text_exo = exercise_data[0].split("{}")
@@ -78,11 +80,39 @@ def main(page: ft.Page):
             exercise_field.controls.append(ft.Text(text_exo[i]))
             if i < len(text_exo) - 1:
                 exercise_field.controls.append(ft.TextField(hint_text='..............'))
+        exercise_field.controls.append(ft.ElevatedButton("Valider", on_click=lambda e : get_and_reset_values(exercise_field, exercise_data)))
+        
+        # Ajout d'un bouton de génération de l'exercice
+        exercise_field.controls.append(ft.ElevatedButton("New exercice", on_click=lambda e : new_exercices_data(exercise_field)))
 
         return exercise_field
-        
-
     
+    def new_exercices_data(exercise_field):
+        global exercise_data 
+        exercise_data = ["AAAAAAAAAAA {} BBBBBBBB {}.", "c", "d"] # Changer pour interroger le LLM et qu'il interroge le modèle
+        print("Mise à jour des données")
+        page.controls.pop(1)
+        print(exercise_data)
+        page.insert(1, generate_clicked(exercise_data))
+        print("Données mises à jour")
+        page.update()
+
+    def get_and_reset_values(exercice_field: ft.Column, exercise_data=exercise_data):
+        i = 0
+        for text_field in exercice_field.controls:
+            if i % 2 == 1 and i < len(exercice_field.controls) - 2:
+                value = text_field.value
+                if value == exercise_data[i//2 + 1]:
+                    print("Correct")
+                    text_field.bgcolor = ft.colors.GREEN_200
+                else:
+                    text_field.bgcolor = ft.colors.RED
+                    text_field.value = exercise_data[i//2 + 1]
+            i += 1
+        exercice_field.update()
+
+    ### Navigation ###
+        
     def selected_tab(e):
         global indexe
         if indexe == e.control.selected_index:
