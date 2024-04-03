@@ -1,8 +1,12 @@
 import time
+import random as rd
+import json
 import flet as ft
 
 ### Variables ###
 indexe = 0
+
+json_exercices = json.load(open("static/exercices_data.json"))
 
 def switch_theme(page: ft.Page):
     # SWITCH THE THEME
@@ -105,7 +109,7 @@ def main(page: ft.Page):
     
     def new_exercices_data(exercise_field):
         global exercise_data 
-        exercise_data = ["AAAAAAAAAAA {} BBBBBBBB {}.", "c", "d"] # Changer pour interroger le LLM et qu'il interroge le modèle
+        exercise_data = json_exercices[str(rd.randint(1, 10))] # Changer pour interroger le LLM et qu'il interroge le modèle ou compléter ce JSON
         print("Mise à jour des données")
         page.controls.pop(1)
         print(exercise_data)
