@@ -61,6 +61,7 @@ def main(page: ft.Page):
             ft.NavigationDestination(icon=ft.icons.CHAT_BUBBLE, label="Chat", selected_icon=ft.icons.CHAT_BUBBLE_OUTLINE),
             ft.NavigationDestination(icon=ft.icons.BOOK, label="Lessons", selected_icon=ft.icons.BOOK_OUTLINED),
             ft.NavigationDestination(icon=ft.icons.MENU_BOOK, label="Exercices", selected_icon=ft.icons.MENU_BOOK_OUTLINED),
+            ft.NavigationDestination(icon=ft.icons.SPORTS_SCORE, label="IrregularVerbs", selected_icon=ft.icons.SPORTS_SCORE_OUTLINED),
         ]
     )
 
@@ -99,7 +100,7 @@ def main(page: ft.Page):
         for i in range(len(text_exo)):
             exercise_field.controls.append(ft.Text(text_exo[i]))
             if i < len(text_exo) - 1:
-                exercise_field.controls.append(ft.TextField(hint_text='..............'))
+                exercise_field.controls.append(ft.TextField(hint_text='__________'))
         exercise_field.controls.append(ft.ElevatedButton("Valider", on_click=lambda e : get_and_reset_values(exercise_field, exercise_data)))
         
         # Ajout d'un bouton de génération de l'exercice
@@ -108,13 +109,16 @@ def main(page: ft.Page):
         return exercise_field
     
     def new_exercices_data(exercise_field):
-        global exercise_data 
-        exercise_data = json_exercices[str(rd.randint(1, 10))] # Changer pour interroger le LLM et qu'il interroge le modèle ou compléter ce JSON
-        print("Mise à jour des données")
-        page.controls.pop(1)
-        print(exercise_data)
-        page.insert(1, generate_clicked(exercise_data))
-        print("Données mises à jour")
+        if rd.randint(1, 3) > 1:
+            global exercise_data 
+            exercise_data = json_exercices[str(rd.randint(1, 10))] # Changer pour interroger le LLM et qu'il interroge le modèle ou compléter ce JSON
+            print("Mise à jour des données")
+            page.controls.pop(1)
+            print(exercise_data)
+            page.insert(1, generate_clicked(exercise_data))
+            print("Données mises à jour")
+        else:
+            print("Données non mises à jour")
         page.update()
 
     def get_and_reset_values(exercice_field: ft.Column, exercise_data=exercise_data):
@@ -148,6 +152,9 @@ def main(page: ft.Page):
         elif indexe == 2:
             page.controls.pop(1)
             page.insert(1, generate_clicked(exercise_data))
+        elif indexe == 3:
+            page.controls.pop(1)
+            page.insert(1, ft.Text("Irregular Verbs"))
         else:
             print("Unknown")
 
