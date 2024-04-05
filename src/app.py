@@ -7,6 +7,11 @@ import flet as ft
 indexe = 0
 
 json_exercices = json.load(open("static/exercices_data.json"))
+json_irregular_verbs = json.load(open("static/Verbs.json"))
+
+Score = 0
+Best_Score = json_irregular_verbs["Score"]
+verb = json_irregular_verbs["verbs"][rd.randint(0, len(json_irregular_verbs["verbs"]))]
 
 def switch_theme(page: ft.Page):
     # SWITCH THE THEME
@@ -108,6 +113,50 @@ def main(page: ft.Page):
 
         return exercise_field
     
+    def generate_irregulard() -> ft.Column:
+        global verb
+        verb = json_irregular_verbs["verbs"][rd.randint(0, len(json_irregular_verbs["verbs"]))]
+        verb_field = ft.Column()
+        entete = ft.Container(ft.Text("Score : " + str(Score) + "   Best score : " + str(Best_Score)), padding=3, margin=3, bgcolor=ft.colors.BLUE_500, border_radius=5)
+        verb_field.controls.append(entete)
+        choix = ["Base", "Past-simple", "Past-Participle"]
+        j = rd.choice(choix)
+        for k, v in verb.items():
+            if k == j:
+                verb_field.controls.append(ft.TextField(hint_text= k))
+            else:
+                verb_field.controls.append(ft.Text(v))
+        verb_field.controls.append(ft.ElevatedButton("Valider", on_click=lambda e : correct_irregular(verb_field, verb)))
+        return verb_field
+
+    def correct_irregular(verb_field, verb):
+        global Score
+        global Best_Score
+        for text_field in verb_field.controls:
+            if type(text_field) == ft.TextField:
+                value = text_field.value
+                if value == verb[text_field.hint_text]:
+                    print("Correct")
+                    text_field.bgcolor = ft.colors.GREEN_200
+                    Score += 1
+                    if Score > Best_Score:
+                        Best_Score = Score
+                else:
+                    text_field.bgcolor = ft.colors.RED
+                    text_field.value = verb[text_field.hint_text]
+                    Score = 0
+                    json_irregular_verbs["Score"] = Best_Score
+                    with open("static/Verbs.json", "w") as f:
+                        json.dump(json_irregular_verbs, f)
+        page.splash.visible = True
+        page.update()
+        time.sleep(3)
+        page.splash.visible = False
+        page.controls.pop(1)
+        page.insert(1, generate_irregulard())
+        page.update()
+        
+
     def new_exercices_data(exercise_field):
         if rd.randint(1, 3) > 1:
             global exercise_data 
@@ -120,6 +169,7 @@ def main(page: ft.Page):
         else:
             print("Données non mises à jour")
         page.update()
+
 
     def get_and_reset_values(exercice_field: ft.Column, exercise_data=exercise_data):
         i = 0
@@ -154,7 +204,7 @@ def main(page: ft.Page):
             page.insert(1, generate_clicked(exercise_data))
         elif indexe == 3:
             page.controls.pop(1)
-            page.insert(1, ft.Text("Irregular Verbs"))
+            page.insert(1, generate_irregulard())
         else:
             print("Unknown")
 
