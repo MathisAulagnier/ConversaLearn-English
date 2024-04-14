@@ -84,24 +84,37 @@ def main(page: ft.Page):
     ### Chat ###
 
     def send_message(e):
-        sent_message = ft.Container(ft.Text(message_input.value, size=16, color="white"),padding=3, margin=3, bgcolor=ft.colors.BLUE_500 , border_radius=5)
+        if message_input.value == "":
+            pass
+        else:
+            str_message_user = message_input.value
+            sent_message = ft.Container(ft.Text(str_message_user, size=16, color="white"),padding=3, margin=3, bgcolor=ft.colors.BLUE_500 , border_radius=5)
+            correction_button = ft.IconButton(ft.icons.CHECK, on_click=lambda e: bouton_correction(e, str_message_user))
 
-        global msg_LLM
-        received_message = ft.Text(last_respond_LLM(msg_LLM, message_input.value), size=16) # Modifier par la réponse du LLM
+            global msg_LLM
+            received_message = ft.Text(last_respond_LLM(msg_LLM, str_message_user), size=16) # Modifier par la réponse du LLM
 
-        # Ajouter une bulle de message
-        sent_row = ft.Row([sent_message, profil], alignment=ft.MainAxisAlignment.END)
-        received_row = ft.Row([bot_profil, received_message], alignment=ft.MainAxisAlignment.START)
-        message_list.controls.append(sent_row)
+            # Ajouter une bulle de message
+            sent_row = ft.Row([sent_message, correction_button, profil], alignment=ft.MainAxisAlignment.END)
+            received_row = ft.Row([bot_profil, received_message], alignment=ft.MainAxisAlignment.START)
+            message_list.controls.append(sent_row)
+            message_list.controls.append(received_row)
+            message_list.update() 
+
+            # Réinitialiser le champ de texte
+            message_input.value = ""
+            message_input.update()
+            page.update()
+
+    def bouton_correction(e, message):
+        # en cas d'appuie sur le bouton correction, on doit alors apeler l'agent correction pour qu'il arrive dans la conv et fasse la correction
+        msg_correction = init_message_agent_correction() # on initialise la conversation avec un agent de correction
+        rajout_message_user(msg_correction, message) # on rajout dans cette conv le message que l'on veut corriger
+        response = ft.Text(gene_message_correction(msg_correction), size=16)
+        received_row = ft.Row([bot_profil, response], alignment=ft.MainAxisAlignment.START)
         message_list.controls.append(received_row)
-        message_list.update() 
-
-        # Réinitialiser le champ de texte
-        message_input.value = ""
-        message_input.update()
-        page.update()
-
-    ### Exercices ###
+        print(response)
+        message_list.update()
 
     def generate_clicked(exercise_data) -> ft.Column:
         text_exo = exercise_data[0].split("{}")

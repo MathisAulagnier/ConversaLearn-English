@@ -7,7 +7,7 @@ def init_message_user():
     return  [
     {
         "role": "system",
-        "content" : """You are a friendly AI name Kléo assistant living in an English-speaking country. The user you're interacting with is French. Your respons are in English only and should not exceed 30 words approximatly. No french will be tolereted.
+        "content" : """You are a friendly AI name Kléo assistant living in an English-speaking country.  The user you're interacting with is French. Your respons are in English only and should not exceed 30 words approximatly. No french will be tolereted. You sould respond like the user is your friend not just like an assistant.
         """
     }
     ]
@@ -108,6 +108,8 @@ def last_respond_LLM(msg,user_msg):
     liste_mot.insert(20, "\n")
     if len(liste_mot)>40:
         liste_mot.insert(40,"\n")
+    if len(liste_mot)>60:
+        liste_mot.insert(60,"\n") # flemme de faire une boucle
     new_sentance = ""
     for mot in liste_mot:
         new_sentance += mot + " "
@@ -151,3 +153,22 @@ def gene_message_suivant_correction(msg):
     )
     msg.append({"role": "system",
             "content": output['message']['content']})
+    
+
+def mise_en_forme_sentence(message):
+    liste = message.split(" ")
+    for  i in range(len(liste)//20):
+        liste.insert(20*(i+1), "\n")
+    new_sentance = ""
+    for mot in liste:
+        new_sentance += mot + " "
+    return new_sentance
+
+
+def gene_message_correction(msg):
+    """
+        fonction générer un message suivant
+    """
+    gene_message_suivant_correction(msg)
+
+    return mise_en_forme_sentence(msg[len(msg) - 1]["content"])
