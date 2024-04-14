@@ -35,7 +35,8 @@ def main(page: ft.Page):
 
     profil = ft.CircleAvatar(foreground_image_url="https://media.licdn.com/dms/image/D4E03AQEXTy2eNrOWoQ/profile-displayphoto-shrink_400_400/0/1695153733199?e=1717632000&v=beta&t=S_YTA9qASE8Z20jLNCekoKRlRFcGu8L4Hi8806icuUI")
     bot_profil = ft.CircleAvatar(foreground_image_url="https://img.freepik.com/photos-gratuite/vue-du-robot-graphique-3d_23-2150849173.jpg")
-    
+    bot_teacher = ft.CircleAvatar(foreground_image_url="https://www.educol.net/image-professeur-dl30229.jpg")
+
     message_list = ft.Column(expand=1, wrap=False, scroll="always", auto_scroll=True,)
     message_input = ft.TextField(hint_text="Type a message...", )
     send_button = ft.ElevatedButton("Send", on_click=lambda e: send_message(e))
@@ -111,7 +112,7 @@ def main(page: ft.Page):
         msg_correction = init_message_agent_correction() # on initialise la conversation avec un agent de correction
         rajout_message_user(msg_correction, message) # on rajout dans cette conv le message que l'on veut corriger
         response = ft.Text(gene_message_correction(msg_correction), size=16)
-        received_row = ft.Row([bot_profil, response], alignment=ft.MainAxisAlignment.START)
+        received_row = ft.Row([bot_teacher, response], alignment=ft.MainAxisAlignment.START)
         message_list.controls.append(received_row)
         print(response)
         message_list.update()
