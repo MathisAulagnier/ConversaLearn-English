@@ -2,6 +2,7 @@ import time
 import random as rd
 import json
 import flet as ft
+from LLM_control import *
 
 ### Variables ###
 indexe = 0
@@ -20,6 +21,7 @@ def switch_theme(page: ft.Page):
 
 
 def main(page: ft.Page):
+
     page.title = "ConversaLearn"
     page.icon = "static/images/max.png"
     page.theme_mode = "light"
@@ -37,6 +39,8 @@ def main(page: ft.Page):
     message_list = ft.Column(expand=1, wrap=False, scroll="always", auto_scroll=True,)
     message_input = ft.TextField(hint_text="Type a message...", )
     send_button = ft.ElevatedButton("Send", on_click=lambda e: send_message(e))
+
+
 
     # Mettre message_list, message_input, send_button dans une colonne
     chat = ft.Column(
@@ -82,7 +86,8 @@ def main(page: ft.Page):
     def send_message(e):
         sent_message = ft.Container(ft.Text(message_input.value, size=16, color="white"),padding=3, margin=3, bgcolor=ft.colors.BLUE_500 , border_radius=5)
 
-        received_message = ft.Text("vu", size=16) # Modifier par la réponse du LLM
+        global msg_LLM
+        received_message = ft.Text(last_respond_LLM(msg_LLM, message_input.value), size=16) # Modifier par la réponse du LLM
 
         # Ajouter une bulle de message
         sent_row = ft.Row([sent_message, profil], alignment=ft.MainAxisAlignment.END)
@@ -211,5 +216,5 @@ def main(page: ft.Page):
     page.add(head, chat, navigation_bar,)
     page.update()
 
-
+msg_LLM = init_message_user()
 ft.app(target=main, view=ft.AppView.FLET_APP)
