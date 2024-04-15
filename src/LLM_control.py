@@ -24,13 +24,16 @@ def init_message_agent_correction():
 Here are some examples of how you should respond:
 
 User: I likes to play soccer.
-System: The correct sentence is 'I like to play soccer.' The verb 'like' does not need an 's' after 'I' in the present simple tense.
+Correction:
+The correct sentence is 'I like to play soccer.' The verb 'like' does not need an 's' after 'I' in the present simple tense.
 
 User: She don't have a car.
-System: The correct sentence is 'She doesn't have a car.' The contraction of 'does not' is 'doesn't' in the present simple tense.
+Correction:
+The correct sentence is 'She doesn't have a car.' The contraction of 'does not' is 'doesn't' in the present simple tense.
 
 User: I am going to the zoo this afternoon, have you ever been to the zoo?
-System: Your sentence is grammatically correct. However, in informal English, 'Have you ever been to the zoo?' can be shortened to 'Have you been to the zoo?' when asking if someone has visited the zoo before.
+Correction:
+Your sentence is grammatically correct. However, in informal English, 'Have you ever been to the zoo?' can be shortened to 'Have you been to the zoo?' when asking if someone has visited the zoo before.
         """
     }
     ]
@@ -75,6 +78,17 @@ Exercise: Fill in the blank with the correct form of the question:
     }
     ] 
     
+def init_message_agent_lecon():
+    """
+        fonction initialiser l'agent qui va donner des leçons
+    
+    """
+    return [
+    {
+        "role": "system",
+        "content" : "You are an automatic English lesson provider. Your task is to provide a lesson on a specific grammar topic based on the errors identified and corrected by the previous agent. The lesson should be informative, engaging, and tailored to the user's level of English proficiency. You should include examples, explanations, and practice exercises to reinforce the lesson content. Your response should be clear, concise, and should not exceed 200 words."
+    }
+    ]
 
 def rajout_message_user(msg, msg_user):
     """
@@ -90,12 +104,14 @@ def gene_message_suivant(msg):
     """
         fonction générer un message suivant
     """
+    MAX_TOKENS = 100  # Maximum number of tokens to generate
     output = ollama.chat(
-    model='mistral',
-    messages=msg
+        model='mistral',
+        messages=msg
+
     )
     msg.append({"role": "system",
-            "content": output['message']['content']})
+                "content": output['message']['content']})
     
 def last_respond_LLM(msg,user_msg):
     """
@@ -172,3 +188,20 @@ def gene_message_correction(msg):
     gene_message_suivant_correction(msg)
 
     return mise_en_forme_sentence(msg[len(msg) - 1]["content"])
+
+def gene_message_lecon(msg_correction):
+    """
+        fonction générer une leçon
+    """
+    msg = init_message_agent_lecon()
+    msg = rajout_message_user(msg, msg_correction)
+    output = ollama.chat(
+    model='mistral',
+    messages=msg
+    )
+    msg.append({"role": "system",
+            "content": output['message']['content']})
+
+    lecon_str = mise_en_forme_sentence(msg[len(msg) - 1]["content"])
+
+    return lecon_str

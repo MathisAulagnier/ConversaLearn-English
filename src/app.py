@@ -6,6 +6,7 @@ from LLM_control import *
 
 ### Variables ###
 indexe = 0
+lecon_str = "lesson"
 
 json_exercices = json.load(open("static/exercices_data.json"))
 json_irregular_verbs = json.load(open("static/Verbs.json"))
@@ -69,7 +70,7 @@ def main(page: ft.Page):
         on_change=lambda e: selected_tab(e),
         destinations=[
             ft.NavigationDestination(icon=ft.icons.CHAT_BUBBLE, label="Chat", selected_icon=ft.icons.CHAT_BUBBLE_OUTLINE),
-            ft.NavigationDestination(icon=ft.icons.BOOK, label="Lessons", selected_icon=ft.icons.BOOK_OUTLINED),
+            #ft.NavigationDestination(icon=ft.icons.BOOK, label="Lessons", selected_icon=ft.icons.BOOK_OUTLINED),
             ft.NavigationDestination(icon=ft.icons.MENU_BOOK, label="Exercices", selected_icon=ft.icons.MENU_BOOK_OUTLINED),
             ft.NavigationDestination(icon=ft.icons.SPORTS_SCORE, label="IrregularVerbs", selected_icon=ft.icons.SPORTS_SCORE_OUTLINED),
         ]
@@ -107,12 +108,25 @@ def main(page: ft.Page):
             message_input.update()
             page.update()
 
+    def go_to_page_correction(e, message):
+        print(message)
+        print("####")
+        lecon_str = gene_message_lecon(message)
+        print(lecon_str)
+        print("####")
+        page.controls.pop(1)
+        page.insert(1, ft.Text(lecon_str))
+        page.update()
+
     def bouton_correction(e, message):
         # en cas d'appuie sur le bouton correction, on doit alors apeler l'agent correction pour qu'il arrive dans la conv et fasse la correction
         msg_correction = init_message_agent_correction() # on initialise la conversation avec un agent de correction
         rajout_message_user(msg_correction, message) # on rajout dans cette conv le message que l'on veut corriger
-        response = ft.Text(gene_message_correction(msg_correction), size=16)
-        received_row = ft.Row([bot_teacher, response], alignment=ft.MainAxisAlignment.START)
+        message_de_correction = gene_message_correction(msg_correction)
+
+        correction_gene_lecon = ft.IconButton(ft.icons.CHECK, on_click=lambda e: go_to_page_correction(e, message_de_correction))
+        response = ft.Text(message_de_correction, size=16)
+        received_row = ft.Row([bot_teacher, correction_gene_lecon, response], alignment=ft.MainAxisAlignment.START)
         message_list.controls.append(received_row)
         print(response)
         message_list.update()
@@ -208,6 +222,7 @@ def main(page: ft.Page):
         
     def selected_tab(e):
         global indexe
+        global lecon_str
         if indexe == e.control.selected_index:
             return  # Do nothing
         indexe = e.control.selected_index
@@ -215,13 +230,11 @@ def main(page: ft.Page):
         if indexe == 0:
             page.controls.pop(1)
             page.insert(1, chat)
+
         elif indexe == 1:
             page.controls.pop(1)
-            page.insert(1, ft.Text("Lessons"))
-        elif indexe == 2:
-            page.controls.pop(1)
             page.insert(1, generate_clicked(exercise_data))
-        elif indexe == 3:
+        elif indexe == 2:
             page.controls.pop(1)
             page.insert(1, generate_irregulard())
         else:
